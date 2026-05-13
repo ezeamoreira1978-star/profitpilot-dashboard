@@ -28,6 +28,68 @@ st.set_page_config(
     page_icon="📊",
     layout="wide"
 )
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    }
+
+    div[data-testid="stMetric"] {
+        background: white;
+        padding: 22px;
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        border: 1px solid #e5e7eb;
+    }
+
+    div[data-testid="stMetricLabel"] {
+        font-size: 15px;
+        color: #475569;
+    }
+
+    div[data-testid="stMetricValue"] {
+        font-size: 34px;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 12px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        background: white;
+        border-radius: 12px 12px 0 0;
+        padding: 12px 18px;
+        font-weight: 600;
+    }
+
+    .stDownloadButton button {
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 600;
+        border: 1px solid #cbd5e1;
+        background: white;
+    }
+
+    .stDownloadButton button:hover {
+        border-color: #2563eb;
+        color: #2563eb;
+    }
+
+    section[data-testid="stFileUploader"] {
+        background: white;
+        border-radius: 18px;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown(
     """
