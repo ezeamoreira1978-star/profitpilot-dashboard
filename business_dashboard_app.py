@@ -31,61 +31,134 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+
+    /* MAIN BACKGROUND */
     .stApp {
-        background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+        background:
+        radial-gradient(circle at top left, #1e3a8a15, transparent 25%),
+        radial-gradient(circle at bottom right, #2563eb10, transparent 30%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
     }
 
+    /* SIDEBAR */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        border-right: 1px solid #334155;
+    }
+
+    section[data-testid="stSidebar"] * {
+        color: white !important;
+    }
+
+    /* KPI CARDS */
     div[data-testid="stMetric"] {
-        background: white;
-        padding: 22px;
-        border-radius: 18px;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-        border: 1px solid #e5e7eb;
+        background: rgba(255,255,255,0.92);
+        backdrop-filter: blur(12px);
+        padding: 24px;
+        border-radius: 22px;
+        box-shadow:
+            0 10px 30px rgba(15, 23, 42, 0.10),
+            0 2px 6px rgba(15, 23, 42, 0.05);
+        border: 1px solid rgba(255,255,255,0.4);
+        transition: all 0.25s ease;
+    }
+
+    div[data-testid="stMetric"]:hover {
+        transform: translateY(-4px);
+        box-shadow:
+            0 14px 34px rgba(15, 23, 42, 0.15),
+            0 4px 10px rgba(15, 23, 42, 0.08);
     }
 
     div[data-testid="stMetricLabel"] {
         font-size: 15px;
         color: #475569;
+        font-weight: 600;
     }
 
     div[data-testid="stMetricValue"] {
-        font-size: 34px;
+        font-size: 38px;
         font-weight: 800;
         color: #0f172a;
     }
 
+    /* TABS */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 12px;
-        border-bottom: 1px solid #e5e7eb;
+        gap: 14px;
+        border-bottom: none;
     }
 
     .stTabs [data-baseweb="tab"] {
-        background: white;
-        border-radius: 12px 12px 0 0;
-        padding: 12px 18px;
-        font-weight: 600;
+        background: rgba(255,255,255,0.75);
+        backdrop-filter: blur(10px);
+        border-radius: 16px 16px 0 0;
+        padding: 12px 22px;
+        font-weight: 700;
+        border: 1px solid rgba(255,255,255,0.35);
+        transition: all 0.25s ease;
     }
 
-    .stDownloadButton button {
-        border-radius: 12px;
-        padding: 12px 20px;
-        font-weight: 600;
-        border: 1px solid #cbd5e1;
-        background: white;
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg,#2563eb,#1d4ed8);
+        color: white !important;
+        box-shadow: 0 8px 24px rgba(37,99,235,0.25);
     }
 
-    .stDownloadButton button:hover {
-        border-color: #2563eb;
-        color: #2563eb;
-    }
-
+    /* FILE UPLOADER */
     section[data-testid="stFileUploader"] {
-        background: white;
-        border-radius: 18px;
-        padding: 16px;
-        border: 1px solid #e5e7eb;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        background: rgba(255,255,255,0.82);
+        backdrop-filter: blur(12px);
+        border-radius: 24px;
+        padding: 18px;
+        border: 1px solid rgba(255,255,255,0.45);
+        box-shadow:
+            0 8px 26px rgba(15, 23, 42, 0.08);
     }
+
+    /* BUTTONS */
+    .stButton button,
+    .stDownloadButton button {
+        border-radius: 14px;
+        padding: 12px 22px;
+        font-weight: 700;
+        border: none;
+        background: linear-gradient(135deg,#2563eb,#1d4ed8);
+        color: white;
+        box-shadow: 0 6px 18px rgba(37,99,235,0.25);
+        transition: all 0.25s ease;
+    }
+
+    .stButton button:hover,
+    .stDownloadButton button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(37,99,235,0.35);
+    }
+
+    /* ALERT BOXES */
+    .stAlert {
+        border-radius: 18px;
+        border: none;
+        box-shadow: 0 6px 20px rgba(15,23,42,0.06);
+    }
+
+    /* TABLES */
+    .stDataFrame {
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 8px 22px rgba(15,23,42,0.08);
+    }
+
+    /* HEADERS */
+    h1, h2, h3 {
+        color: #0f172a;
+        font-weight: 800;
+    }
+
+    /* FOOTER */
+    footer {
+        visibility: hidden;
+    }
+
     </style>
     """,
     unsafe_allow_html=True
