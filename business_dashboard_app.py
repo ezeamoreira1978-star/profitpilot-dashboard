@@ -24,13 +24,37 @@ if password != APP_PASSWORD:
     st.warning("Please enter the correct password to access ProfitPilot.")
     st.stop()
 st.set_page_config(
-    page_title="ProfitPilot Dashboard",
+    page_title="E&E ProfitMatrix",
     page_icon="📊",
     layout="wide"
 )
 
-st.title("📊 ProfitPilot Business Dashboard")
-st.write("Analyze sales, costs, profit, margins and product risks automatically.")
+st.markdown(
+    """
+    <div style="display:flex; align-items:center; gap:18px;">
+        <div style="
+            width:70px;
+            height:70px;
+            border-radius:18px;
+            background:linear-gradient(135deg,#1f2937,#2563eb);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+            font-size:24px;
+            font-weight:800;">
+            E&E
+        </div>
+        <div>
+            <h1>E&E ProfitMatrix Business Dashboard</h1>
+            <p style="font-size:18px; margin-top:6px;">
+                Business intelligence for sales, profit, margins and product risk analysis.
+            </p>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 def create_word_report():
     buffer = BytesIO()
     doc = Document()
