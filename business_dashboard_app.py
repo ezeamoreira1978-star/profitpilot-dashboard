@@ -16,6 +16,13 @@ from reportlab.platypus import (
     TableStyle,
     Image
 )
+APP_PASSWORD = "ProfitPilot2026"
+
+password = st.text_input("Enter password", type="password")
+
+if password != APP_PASSWORD:
+    st.warning("Please enter the correct password to access ProfitPilot.")
+    st.stop()
 st.set_page_config(
     page_title="ProfitPilot Dashboard",
     page_icon="📊",
