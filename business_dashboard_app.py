@@ -538,7 +538,7 @@ if uploaded_file is not None:
             title="Revenue, Cost and Profit Over Time",
             color_discrete_sequence=["#2563eb", "#dc2626", "#16a34a"]
         )
-        fig.write_image("sales_chart.png")
+        # fig.write_image("sales_chart.png")
         st.plotly_chart(fig, use_container_width=True)
 
         fig2 = px.bar(
@@ -554,7 +554,7 @@ if uploaded_file is not None:
                 "🔴 Loss": "#dc2626"
                 }
         )
-        fig2.write_image("product_chart.png")
+        # fig2.write_image("product_chart.png")
         st.plotly_chart(fig2, use_container_width=True)
 
     with tab3:
