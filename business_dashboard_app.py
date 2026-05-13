@@ -16,7 +16,7 @@ from reportlab.platypus import (
     TableStyle,
     Image
 )
-APP_PASSWORD = "ProfitPilot2026"
+APP_PASSWORD = st.secrets["APP_PASSWORD"]
 
 password = st.text_input("Enter password", type="password")
 
