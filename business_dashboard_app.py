@@ -593,7 +593,42 @@ if uploaded_file is not None:
         lambda row: classify_product(row["profit"], row["margin"]),
         axis=1
     )
+    
+    with st.sidebar:
 
+     st.markdown("## 🚀 E&E ProfitMatrix")
+
+    st.markdown("""
+    Business Intelligence Platform
+    """)
+
+    st.divider()
+
+    st.markdown("### 📌 Features")
+
+    st.markdown("""
+    - Sales analytics
+    - Margin analysis
+    - Product risk detection
+    - Executive reports
+    - CSV exports
+    - PDF & Word reports
+    """)
+
+    st.divider()
+
+    st.markdown("### 📈 Platform Status")
+
+    st.success("System operational")
+
+    st.divider()
+
+    st.markdown("""
+    **Developed by E&E Analytics**
+    
+    Business Intelligence & Data Solutions
+    """
+    )
     tab1, tab2, tab3, tab4 = st.tabs([
         "📌 Executive Summary",
         "📈 Charts",
@@ -701,3 +736,14 @@ else:
 
     st.subheader("Example format")
     st.dataframe(sample, use_container_width=True)
+
+st.markdown("---")
+
+st.markdown(
+    """
+    <div style='text-align:center; color:gray; padding:20px;'>
+        © 2026 E&E ProfitMatrix • Business Intelligence Platform
+    </div>
+    """,
+    unsafe_allow_html=True
+)
