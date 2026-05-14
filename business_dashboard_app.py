@@ -754,7 +754,37 @@ if uploaded_file is not None:
         lambda row: classify_product(row["profit"], row["margin"]),
         axis=1
     )
-    
+    product_text = " ".join(
+        product_analysis[product_col].astype(str).str.lower().tolist()
+    )
+
+    business_type = "General Business"
+
+    if any(word in product_text for word in [
+        "coffee", "burger", "pizza", "sandwich", "juice", "bread", "cake", "restaurant", "food"
+    ]):
+        business_type = "Food / Restaurant Business"
+
+    elif any(word in product_text for word in [
+        "hair", "barber", "beard", "manicure", "pedicure", "nails", "tint", "tinte", "corte", "barba"
+    ]):
+        business_type = "Beauty / Barber Business"
+
+    elif any(word in product_text for word in [
+        "case", "legal", "lawyer", "contract", "consulting", "consultoria", "abogado", "caso"
+    ]):
+        business_type = "Legal / Professional Services"
+
+    elif any(word in product_text for word in [
+        "project", "construction", "cement", "labor", "material", "obra", "proyecto", "construccion"
+    ]):
+        business_type = "Construction / Project Business"
+
+    elif any(word in product_text for word in [
+        "membership", "gym", "training", "fitness", "coach", "membresia"
+    ]):
+        business_type = "Fitness / Membership Business"
+
     with st.sidebar:
 
      st.markdown("## 🚀 E&E ProfitMatrix")
@@ -805,6 +835,7 @@ if uploaded_file is not None:
         col2.metric("Cost", f"${total_cost:,.2f}")
         col3.metric("Profit", f"${total_profit:,.2f}")
         col4.metric("Margin", f"{avg_margin:.2f}%")
+        st.info(f"🏢 Detected business type: **{business_type}**")
 
         st.subheader("Business Alerts")
 
@@ -887,7 +918,8 @@ if uploaded_file is not None:
 )
     with tab5:
         st.subheader("🤖 Smart Business Insights")
-
+        st.info(f"🏢 Detected business profile: **{business_type}**")
+        
         top_revenue_item = product_analysis.sort_values(
             "revenue",
             ascending=False
