@@ -790,12 +790,13 @@ if uploaded_file is not None:
     Business Intelligence & Data Solutions
     """
     )
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "📌 Executive Summary",
-        "📈 Charts",
-        "⚠️ Product Risk",
-        "📥 Downloads"
-    ])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "📌 Executive Summary",
+    "📈 Charts",
+    "⚠️ Product Risk",
+    "📥 Downloads",
+    "🤖 AI Insights"
+])
 
     with tab1:
         col1, col2, col3, col4 = st.columns(4)
@@ -884,6 +885,77 @@ if uploaded_file is not None:
             file_name="profitpilot_executive_report.pdf",
             mime="application/pdf"
 )
+    with tab5:
+        st.subheader("🤖 Smart Business Insights")
+
+        top_revenue_item = product_analysis.sort_values(
+            "revenue",
+            ascending=False
+        ).iloc[0]
+
+        top_profit_item = product_analysis.sort_values(
+            "profit",
+            ascending=False
+        ).iloc[0]
+
+        lowest_margin_item = product_analysis.sort_values(
+            "margin",
+            ascending=True
+        ).iloc[0]
+
+        loss_count = (product_analysis["profit"] < 0).sum()
+        low_margin_count = (product_analysis["margin"] < 15).sum()
+
+        st.markdown("### 🔎 Key Findings")
+
+        st.success(
+            f"💰 Highest revenue item: **{top_revenue_item[product_col]}** "
+            f"with ${top_revenue_item['revenue']:,.2f} in revenue."
+        )
+
+        st.success(
+            f"🏆 Most profitable item: **{top_profit_item[product_col]}** "
+            f"with ${top_profit_item['profit']:,.2f} in profit."
+        )
+
+        st.warning(
+            f"⚠️ Lowest margin item: **{lowest_margin_item[product_col]}** "
+            f"with {lowest_margin_item['margin']:.2f}% margin."
+        )
+
+        if loss_count > 0:
+            st.error(
+                f"🚨 {loss_count} item(s) are generating losses. "
+                "These should be reviewed immediately."
+            )
+        else:
+            st.success("✅ No loss-generating items were detected.")
+
+        if low_margin_count > 0:
+            st.warning(
+                f"⚠️ {low_margin_count} item(s) have low margins. "
+                "Consider price adjustments or cost reduction."
+            )
+        else:
+            st.success("✅ Margin structure looks healthy overall.")
+
+        st.markdown("### 🧠 Strategic Recommendation")
+
+        if avg_margin >= 50:
+            st.info(
+                "The business shows strong profitability. The main strategy should be "
+                "to scale high-margin products/services and maintain cost discipline."
+            )
+        elif avg_margin >= 25:
+            st.info(
+                "The business is profitable but has room for improvement. Focus on "
+                "optimizing costs, reviewing prices, and promoting the most profitable items."
+            )
+        else:
+            st.info(
+                "The business margin is weak. Priority should be given to cost control, "
+                "pricing review, and elimination or redesign of low-margin items."
+            )
 else:
 
     st.info("Upload your file to start.")
