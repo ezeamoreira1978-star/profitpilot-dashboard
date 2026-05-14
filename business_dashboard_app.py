@@ -16,18 +16,23 @@ from reportlab.platypus import (
     TableStyle,
     Image
 )
-APP_PASSWORD = st.secrets["APP_PASSWORD"]
-
-password = st.text_input("Enter password", type="password")
-
-if password != APP_PASSWORD:
-    st.warning("Please enter the correct password to access ProfitPilot.")
-    st.stop()
 st.set_page_config(
     page_title="E&E ProfitMatrix",
     page_icon="📊",
     layout="wide"
 )
+
+try:
+    APP_PASSWORD = st.secrets["APP_PASSWORD"]
+except Exception:
+    APP_PASSWORD = "ProfitPilot2026"
+
+password = st.text_input("Enter password", type="password")
+
+if password != APP_PASSWORD:
+    st.warning("Please enter the correct password to access ProfitMatrix.")
+    st.stop()
+
 st.markdown(
     """
     <style>
@@ -588,6 +593,49 @@ if uploaded_file is not None:
         .str.replace(" ", "_")
     )
 
+    COLUMN_MAPPINGS = {
+
+    "date": [
+        "date", "fecha", "day"
+    ],
+
+    "product": [
+        "product", "producto", "service",
+        "servicio", "item", "category"
+    ],
+
+    "quantity": [
+        "quantity", "cantidad", "qty",
+        "units"
+    ],
+
+    "unit_price": [
+        "unit_price", "price", "precio",
+        "sale_price", "revenue"
+    ],
+
+    "unit_cost": [
+        "unit_cost", "cost", "costo",
+        "expense"
+    ],
+
+    "employee": [
+        "employee", "empleado",
+        "worker", "staff",
+        "barber", "lawyer"
+    ]
+}
+    def detect_column(df_columns, possible_names):
+
+     for col in df_columns:
+
+        normalized = col.lower().strip()
+
+        if normalized in possible_names:
+            return col
+
+     return None
+    
     column_mapping = {
         "fecha": "date",
         "date": "date",
@@ -633,22 +681,62 @@ if uploaded_file is not None:
     df["unit_cost"] = pd.to_numeric(df["unit_cost"], errors="coerce")
 
     df = df.dropna(subset=["date", "product", "quantity", "unit_price", "unit_cost"])
+    date_col = detect_column(
+    df.columns,
+    COLUMN_MAPPINGS["date"]
+)
 
-    df["revenue"] = df["quantity"] * df["unit_price"]
-    df["cost"] = df["quantity"] * df["unit_cost"]
-    df["profit"] = df["revenue"] - df["cost"]
-    df["margin"] = (df["profit"] / df["revenue"]) * 100
+    product_col = detect_column(
+    df.columns,
+    COLUMN_MAPPINGS["product"]
+)
+
+    quantity_col = detect_column(
+    df.columns,
+    COLUMN_MAPPINGS["quantity"]
+)
+
+    price_col = detect_column(
+    df.columns,
+    COLUMN_MAPPINGS["unit_price"]
+)
+
+    cost_col = detect_column(
+    df.columns,
+    COLUMN_MAPPINGS["unit_cost"]
+)
+
+    employee_col = detect_column(
+    df.columns,
+    COLUMN_MAPPINGS["employee"]
+)
+
+    df["revenue"] = (
+    df[quantity_col] * df[price_col]
+)
+
+    df["cost"] = (
+    df[quantity_col] * df[cost_col]
+)
+
+    df["profit"] = (
+    df["revenue"] - df["cost"]
+)
+
+    df["margin"] = (
+    df["profit"] / df["revenue"]
+) * 100
 
     total_revenue = df["revenue"].sum()
     total_cost = df["cost"].sum()
     total_profit = df["profit"].sum()
     avg_margin = df["margin"].mean()
 
-    product_analysis = df.groupby("product", as_index=False).agg({
-        "revenue": "sum",
-        "cost": "sum",
-        "profit": "sum"
-    })
+    product_analysis = df.groupby(product_col, as_index=False).agg({
+    "revenue": "sum",
+    "cost": "sum",
+    "profit": "sum"
+})
 
     product_analysis["margin"] = (
         product_analysis["profit"] / product_analysis["revenue"]
@@ -795,11 +883,12 @@ if uploaded_file is not None:
             data=create_pdf_report(),
             file_name="profitpilot_executive_report.pdf",
             mime="application/pdf"
-      )
+)
 else:
+
     st.info("Upload your file to start.")
 
-    sample = pd.DataFrame({
+sample = pd.DataFrame({
         "Fecha": ["2026-01-01", "2026-01-02", "2026-01-03"],
         "Producto": ["Coffee", "Sandwich", "Juice"],
         "Cantidad": [30, 15, 20],
@@ -807,8 +896,8 @@ else:
         "Costo Unitario": [1.2, 3.5, 2.0]
     })
 
-    st.subheader("Example format")
-    st.dataframe(sample, use_container_width=True)
+st.subheader("Example format")
+st.dataframe(sample, use_container_width=True)
 
 st.markdown("---")
 
