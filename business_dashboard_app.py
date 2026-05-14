@@ -820,12 +820,13 @@ if uploaded_file is not None:
     Business Intelligence & Data Solutions
     """
     )
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📌 Executive Summary",
     "📈 Charts",
     "⚠️ Product Risk",
     "📥 Downloads",
-    "🤖 AI Insights"
+    "🤖 AI Insights",
+    "📅 Appointments"
 ])
 
     with tab1:
@@ -919,7 +920,7 @@ if uploaded_file is not None:
     with tab5:
         st.subheader("🤖 Smart Business Insights")
         st.info(f"🏢 Detected business profile: **{business_type}**")
-        
+
         top_revenue_item = product_analysis.sort_values(
             "revenue",
             ascending=False
@@ -988,6 +989,117 @@ if uploaded_file is not None:
                 "The business margin is weak. Priority should be given to cost control, "
                 "pricing review, and elimination or redesign of low-margin items."
             )
+            with tab6:
+
+             st.subheader("📅 Appointment Management")
+
+        st.info(
+            "This module allows businesses to manage appointments, "
+            "clients and schedules."
+        )
+
+        appointment_data = pd.DataFrame({
+            "Client": [
+                "John Smith",
+                "Maria Lopez",
+                "David Brown",
+                "Sophia White"
+            ],
+            "Service": [
+                "Haircut",
+                "Manicure",
+                "Consulting",
+                "Training Session"
+            ],
+            "Employee": [
+                "Mike",
+                "Anna",
+                "Robert",
+                "Chris"
+            ],
+            "Date": [
+                "2026-05-15",
+                "2026-05-15",
+                "2026-05-16",
+                "2026-05-16"
+            ],
+            "Time": [
+                "10:00 AM",
+                "11:30 AM",
+                "02:00 PM",
+                "04:30 PM"
+            ],
+            "Status": [
+                "Confirmed",
+                "Pending",
+                "Completed",
+                "Confirmed"
+            ]
+        })
+
+        total_appointments = len(appointment_data)
+        confirmed = (
+            appointment_data["Status"] == "Confirmed"
+        ).sum()
+
+        pending = (
+            appointment_data["Status"] == "Pending"
+        ).sum()
+
+        completed = (
+            appointment_data["Status"] == "Completed"
+        ).sum()
+
+        col1, col2, col3, col4 = st.columns(4)
+
+        with col1:
+            st.metric(
+                "Appointments",
+                total_appointments
+            )
+
+        with col2:
+            st.metric(
+                "Confirmed",
+                confirmed
+            )
+
+        with col3:
+            st.metric(
+                "Pending",
+                pending
+            )
+
+        with col4:
+            st.metric(
+                "Completed",
+                completed
+            )
+
+        st.markdown("### 📋 Appointment Schedule")
+
+        st.dataframe(
+            appointment_data,
+            use_container_width=True
+        )
+
+        st.markdown("### 🧠 Appointment Insights")
+
+        if pending > 0:
+            st.warning(
+                f"There are {pending} pending appointments "
+                "requiring confirmation."
+            )
+
+        if confirmed >= 3:
+            st.success(
+                "Appointment flow looks healthy."
+            )
+
+        st.info(
+            "Future versions will include real booking, "
+            "calendar sync, reminders and customer notifications."
+        )
 else:
 
     st.info("Upload your file to start.")
