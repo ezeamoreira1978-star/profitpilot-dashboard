@@ -331,17 +331,6 @@ uploaded_file = st.file_uploader(
     type=["xlsx", "csv"]
 )
 
-
-def load_file(uploaded_file):
- from reportlab.platypus import (
-    SimpleDocTemplate,
-    Paragraph,
-    Spacer,
-    Table,
-    TableStyle,
-    Image
-)
-
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import letter
@@ -546,40 +535,99 @@ def create_pdf_report():
     return buffer
 
 
+def create_pdf_report():
+
+    buffer = BytesIO()
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=letter,
+        rightMargin=40,
+        leftMargin=40,
+        topMargin=40,
+        bottomMargin=40
+    )
+
+    styles = getSampleStyleSheet()
+    elements = []
+
+    title = Paragraph(
+        "<b>ProfitPilot Executive Business Report</b>",
+        styles["Title"]
+    )
+
+    elements.append(title)
+
+    doc.build(elements)
+
+    buffer.seek(0)
+
+    return buffer
+
+
 def load_file(uploaded_file):
+
     if uploaded_file.name.endswith(".csv"):
         return pd.read_csv(uploaded_file)
 
-    raw_excel = pd.read_excel(uploaded_file, header=None)
+    raw_excel = pd.read_excel(
+        uploaded_file,
+        header=None
+    )
 
     keywords = [
-        "fecha", "date",
-        "producto", "product",
-        "cantidad", "quantity",
-        "precio", "price",
-        "costo", "cost"
+        "fecha",
+        "date",
+        "producto",
+        "product",
+        "cantidad",
+        "quantity",
+        "precio",
+        "price",
+        "costo",
+        "cost"
     ]
 
     header_row = None
 
     for i in range(len(raw_excel)):
-        row_values = raw_excel.iloc[i].fillna("").astype(str).str.lower().tolist()
+
+        row_values = (
+            raw_excel.iloc[i]
+            .fillna("")
+            .astype(str)
+            .str.lower()
+            .tolist()
+        )
+
         row_text = " ".join(row_values)
 
-        matches = sum(keyword in row_text for keyword in keywords)
+        matches = sum(
+            keyword in row_text
+            for keyword in keywords
+        )
 
         if matches >= 2:
             header_row = i
             break
 
     if header_row is None:
-        st.error("Could not detect the header row in this Excel file.")
-        st.write("Detected preview:")
-        st.dataframe(raw_excel.head(15), use_container_width=True)
+
+        st.error(
+            "Could not detect the header row in this Excel file."
+        )
+
+        st.dataframe(
+            raw_excel.head(15),
+            use_container_width=True
+        )
+
         st.stop()
 
-    return pd.read_excel(uploaded_file, header=header_row)
-
+    return pd.read_excel(
+        uploaded_file,
+        header=header_row
+    )
 
 if uploaded_file is not None:
 
@@ -989,132 +1037,84 @@ if uploaded_file is not None:
                 "The business margin is weak. Priority should be given to cost control, "
                 "pricing review, and elimination or redesign of low-margin items."
             )
-            with tab6:
+    with tab6:
 
-             st.subheader("📅 Appointment Management")
-
-        st.info(
-            "This module allows businesses to manage appointments, "
-            "clients and schedules."
-        )
-
-        appointment_data = pd.DataFrame({
-            "Client": [
-                "John Smith",
-                "Maria Lopez",
-                "David Brown",
-                "Sophia White"
-            ],
-            "Service": [
-                "Haircut",
-                "Manicure",
-                "Consulting",
-                "Training Session"
-            ],
-            "Employee": [
-                "Mike",
-                "Anna",
-                "Robert",
-                "Chris"
-            ],
-            "Date": [
-                "2026-05-15",
-                "2026-05-15",
-                "2026-05-16",
-                "2026-05-16"
-            ],
-            "Time": [
-                "10:00 AM",
-                "11:30 AM",
-                "02:00 PM",
-                "04:30 PM"
-            ],
-            "Status": [
-                "Confirmed",
-                "Pending",
-                "Completed",
-                "Confirmed"
-            ]
-        })
-
-        total_appointments = len(appointment_data)
-        confirmed = (
-            appointment_data["Status"] == "Confirmed"
-        ).sum()
-
-        pending = (
-            appointment_data["Status"] == "Pending"
-        ).sum()
-
-        completed = (
-            appointment_data["Status"] == "Completed"
-        ).sum()
-
-        col1, col2, col3, col4 = st.columns(4)
-
-        with col1:
-            st.metric(
-                "Appointments",
-                total_appointments
-            )
-
-        with col2:
-            st.metric(
-                "Confirmed",
-                confirmed
-            )
-
-        with col3:
-            st.metric(
-                "Pending",
-                pending
-            )
-
-        with col4:
-            st.metric(
-                "Completed",
-                completed
-            )
-
-        st.markdown("### 📋 Appointment Schedule")
-
-        st.dataframe(
-            appointment_data,
-            use_container_width=True
-        )
-
-        st.markdown("### 🧠 Appointment Insights")
-
-        if pending > 0:
-            st.warning(
-                f"There are {pending} pending appointments "
-                "requiring confirmation."
-            )
-
-        if confirmed >= 3:
-            st.success(
-                "Appointment flow looks healthy."
-            )
+        st.subheader("📅 Appointment Management")
 
         st.info(
-            "Future versions will include real booking, "
-            "calendar sync, reminders and customer notifications."
+            "Create and manage appointments for any service-based business."
         )
-else:
 
-    st.info("Upload your file to start.")
+        with st.form("appointment_form"):
 
-sample = pd.DataFrame({
-        "Fecha": ["2026-01-01", "2026-01-02", "2026-01-03"],
-        "Producto": ["Coffee", "Sandwich", "Juice"],
-        "Cantidad": [30, 15, 20],
-        "Precio Unitario": [4.5, 8.0, 5.0],
-        "Costo Unitario": [1.2, 3.5, 2.0]
-    })
+            col1, col2 = st.columns(2)
 
-st.subheader("Example format")
-st.dataframe(sample, use_container_width=True)
+            with col1:
+                client_name = st.text_input("Client name")
+                service_name = st.text_input("Service / Product")
+                employee_name = st.text_input("Employee / Professional")
 
+            with col2:
+                appointment_date = st.date_input("Select appointment date")
+                appointment_time = st.time_input("Select appointment time")
+                appointment_status = st.selectbox(
+                    "Status",
+                    ["Pending", "Confirmed", "Completed", "Cancelled"]
+                )
+
+            submitted = st.form_submit_button("📅 Save appointment")
+
+        if "appointments" not in st.session_state:
+            st.session_state.appointments = []
+
+        if submitted:
+            st.session_state.appointments.append({
+                "Client": client_name,
+                "Service": service_name,
+                "Employee": employee_name,
+                "Date": appointment_date,
+                "Time": appointment_time,
+                "Status": appointment_status
+            })
+
+            st.success("Appointment saved successfully.")
+
+        appointment_data = pd.DataFrame(st.session_state.appointments)
+
+        if not appointment_data.empty:
+            total_appointments = len(appointment_data)
+            confirmed = (appointment_data["Status"] == "Confirmed").sum()
+            pending = (appointment_data["Status"] == "Pending").sum()
+            completed = (appointment_data["Status"] == "Completed").sum()
+
+            col1, col2, col3, col4 = st.columns(4)
+
+            col1.metric("Appointments", total_appointments)
+            col2.metric("Confirmed", confirmed)
+            col3.metric("Pending", pending)
+            col4.metric("Completed", completed)
+
+            st.markdown("### 📋 Appointment Schedule")
+            st.dataframe(appointment_data, use_container_width=True)
+            st.markdown("### ✅ Validate Appointment")
+
+            appointment_index = st.selectbox(
+                "Select appointment number",
+                appointment_data.index
+            )
+
+            new_status = st.selectbox(
+                "Update status",
+                ["Pending", "Confirmed", "Completed", "Cancelled"]
+            )
+
+            if st.button("Update appointment status"):
+                st.session_state.appointments[appointment_index]["Status"] = new_status
+                st.success("Appointment status updated successfully.")
+                st.rerun()
+        else:
+          st.info("Upload your file to start.")
+  
 st.markdown("---")
 
 st.markdown(
