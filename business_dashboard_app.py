@@ -868,13 +868,14 @@ if uploaded_file is not None:
     Business Intelligence & Data Solutions
     """
     )
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "📌 Executive Summary",
     "📈 Charts",
     "⚠️ Product Risk",
     "📥 Downloads",
     "🤖 AI Insights",
-    "📅 Appointments"
+    "📅 Appointments",
+    "👥 Clients"
 ])
 
     with tab1:
@@ -1114,6 +1115,44 @@ if uploaded_file is not None:
                 st.rerun()
         else:
           st.info("Upload your file to start.")
+    with tab7:
+
+        st.subheader("👥 Client Management")
+
+        if "clients" not in st.session_state:
+            st.session_state.clients = []
+
+        with st.form("client_form"):
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                client_full_name = st.text_input("Client full name")
+                client_phone = st.text_input("Phone number")
+
+            with col2:
+                client_email = st.text_input("Email")
+                client_notes = st.text_area("Notes")
+
+            save_client = st.form_submit_button("👥 Save client")
+
+        if save_client:
+            st.session_state.clients.append({
+                "Client": client_full_name,
+                "Phone": client_phone,
+                "Email": client_email,
+                "Notes": client_notes
+            })
+
+            st.success("Client saved successfully.")
+
+        clients_data = pd.DataFrame(st.session_state.clients)
+
+        if not clients_data.empty:
+            st.markdown("### 📋 Client Database")
+            st.dataframe(clients_data, use_container_width=True)
+        else:
+         st.info("No clients registered yet.")
   
 st.markdown("---")
 
